@@ -1,5 +1,3 @@
-# Dockerfile.certbot для Certbot
 FROM certbot/certbot:v2.3.0
 
-# Вказуємо шлях до кореневої папки веб-сервера для Certbot
 WORKDIR /var/www/certbot
