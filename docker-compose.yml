@@ -10,7 +10,7 @@ services:
       - /var/www/certbot:/var/www/certbot
     entrypoint: '/bin/sh -c ''(certbot certonly --webroot -w /var/www/certbot --email zhomyruk.yaroslav.v@gmail.com -d win-partners.duckdns.org --agree-tos --force-renewal --rsa-key-size 2048 --non-interactive || true) && while :; do sleep 12h; certbot renew --webroot -w /var/www/certbot --email zhomyruk.yaroslav.v@gmail.com -d win-partners.duckdns.org --agree-tos --force-renewal --rsa-key-size 2048 --non-interactive --post-hook "nginx -s reload"; done'''
     ports:
-      - "8080:80" # Прокидаємо 80 порт контейнера на 8080 хоста для верифікації
+      - "8081:80" # Прокидаємо 80 порт контейнера на 8080 хоста для верифікації
 
   nginx:
     image: nginx:alpine
