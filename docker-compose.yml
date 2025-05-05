@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile.certbot
     volumes:
       - certbot_certs:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot # Монтуємо локальну директорію для файлів верифікації
+      - /var/www/certbot:/var/www/certbot # Монтуємо локальну директорію для файлів верифікації
     entrypoint: '/bin/sh -c ''(certbot certonly --webroot -w /var/www/certbot --email zhomyruk.yaroslav.v@gmail.com -d win-partners.duckdns.org --agree-tos --force-renewal --rsa-key-size 2048 --non-interactive || true) && while :; do sleep 12h; certbot renew --webroot -w /var/www/certbot --email zhomyruk.yaroslav.v@gmail.com -d win-partners.duckdns.org --agree-tos --force-renewal --rsa-key-size 2048 --non-interactive --post-hook "nginx -s reload"; done'''
     #ports:  # Закоментуємо, поки не вирішимо конфлікт з 80 портом
     #  - "8081:80" # Прокидаємо на нестандартний порт для уникнення конфлікту (тимчасово)
