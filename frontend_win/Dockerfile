@@ -21,11 +21,9 @@ FROM nginx:alpine
 # Копіюємо збілдовані файли з етапу build
 COPY --from=build /app/build /usr/share/nginx/html
 
-# Копіюємо конфігурацію Nginx (якщо вона тут потрібна)
-COPY nginx.conf /etc/nginx/nginx.conf
-
-# Відкриваємо порт 80
+# Відкриваємо стандартні порти Nginx
 EXPOSE 80
+EXPOSE 443
 
 # Запускаємо Nginx
 CMD ["nginx", "-g", "daemon off;"]
