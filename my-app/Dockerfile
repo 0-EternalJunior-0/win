@@ -2,16 +2,19 @@
 FROM node:18 AS build
 ENV NODE_OPTIONS=--openssl-legacy-provider
 
+# Встановлюємо робочий каталог
+WORKDIR /app
+
 # Копіюємо файл package.json та встановлюємо залежності
-COPY package.json package.json
+COPY package.json package-lock.json ./
 RUN npm install
 
 # Копіюємо всі файли у контейнер і будуємо додаток
-COPY . .
+COPY . . 
 RUN npm run build
 
-# Використовуємо образ Nginx для сервера
-FROM nginx:stable-alpine
+# Тепер використаємо образ Nginx для розгортання
+FROM nginx:alpine
 
 # Копіюємо білд React у стандартну директорію nginx
 COPY --from=build /app/build /usr/share/nginx/html
