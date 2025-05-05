@@ -7,12 +7,12 @@ services:
       dockerfile: Dockerfile.certbot
     volumes:
       - certbot_certs:/etc/letsencrypt
-      - /var/www/certbot:/var/www/certbot # Монтуємо локальну директорію для файлів верифікації
+      - ./certbot/www:/var/www/certbot # Створіть директорію ./certbot/www на хості!
     entrypoint: '/bin/sh -c ''(certbot certonly --webroot -w /var/www/certbot --email zhomyruk.yaroslav.v@gmail.com -d win-partners.duckdns.org --agree-tos --force-renewal --rsa-key-size 2048 --non-interactive || true) && while :; do sleep 12h; certbot renew --webroot -w /var/www/certbot --email zhomyruk.yaroslav.v@gmail.com -d win-partners.duckdns.org --agree-tos --force-renewal --rsa-key-size 2048 --non-interactive --post-hook "nginx -s reload"; done'''
-    #ports:  # Закоментуємо, поки не вирішимо конфлікт з 80 портом
-    #  - "8081:80" # Прокидаємо на нестандартний порт для уникнення конфлікту (тимчасово)
+    ports:
+      - "8081:80" # Тимчасово розкоментуйте для отримання сертифікатів
 
-  web: # Перейменовано з frontend_win
+  web:
     build:
       context: ./frontend_win
       dockerfile: Dockerfile
@@ -23,8 +23,8 @@ services:
       - ./frontend_win/nginx.conf:/etc/nginx/nginx.conf
       - ./frontend_win/build:/usr/share/nginx/html
     ports:
-      - "8082:80" # HTTP на порту 8082 хоста
-      - "8444:443" # HTTPS на порту 8444 хоста
+      - "8082:80"
+      - "8444:443"
 
 volumes:
   certbot_certs:
