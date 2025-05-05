@@ -23,10 +23,7 @@ services:
 
   my-app:
     build:
-      context: .
-      dockerfile: Dockerfile # Використовуємо Dockerfile для React
-    volumes:
-      - ./my-app:/app # Твій додаток
+      context: ./my-app
+      dockerfile: Dockerfile
     environment:
       - NODE_ENV=production
-    command: npm start # Запускаємо додаток

@@ -5,12 +5,12 @@ ENV NODE_OPTIONS=--openssl-legacy-provider
 # Встановлюємо робочий каталог
 WORKDIR /app
 
-# Копіюємо файл package.json та встановлюємо залежності
+# Копіюємо package.json та package-lock.json і встановлюємо залежності
 COPY package.json package-lock.json ./
 RUN npm install
 
-# Копіюємо всі файли у контейнер і будуємо додаток
-COPY . . 
+# Копіюємо всі файли і будуємо додаток
+COPY . .
 RUN npm run build
 
 # Тепер використаємо образ Nginx для розгортання
