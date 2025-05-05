@@ -1,29 +1,16 @@
-# Вибираємо базовий образ Node.js для збірки додатку
+# Використовуємо Node.js для побудови додатку
 FROM node:18 AS build
-ENV NODE_OPTIONS=--openssl-legacy-provider
 
-# Встановлюємо робочий каталог
 WORKDIR /app
 
-# Копіюємо package.json та package-lock.json і встановлюємо залежності
+# Копіюємо package.json і package-lock.json
 COPY package.json package-lock.json ./
+
+# Встановлюємо залежності
 RUN npm install
 
-# Копіюємо всі файли і будуємо додаток
+# Копіюємо решту файлів
 COPY . .
+
+# Створюємо продакшн-білд
 RUN npm run build
-
-# Тепер використаємо образ Nginx для розгортання
-FROM nginx:alpine
-
-# Копіюємо білд React у стандартну директорію nginx
-COPY --from=build /app/build /usr/share/nginx/html
-
-# Копіюємо свій конфіг, якщо є
-COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
-
-# Відкриваємо порт 80 (стандартний порт Nginx)
-EXPOSE 8082
-
-# Запускаємо Nginx
-CMD ["nginx", "-g", "daemon off;"]
