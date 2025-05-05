@@ -3,6 +3,3 @@ FROM certbot/certbot:v2.3.0
 
 # Вказуємо шлях до кореневої папки веб-сервера для Certbot
 WORKDIR /var/www/certbot
-
-# Встановлюємо необхідні для роботи Certbot пакунки
-RUN apt-get update && apt-get install -y curl
