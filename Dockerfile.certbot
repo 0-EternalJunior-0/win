@@ -1,18 +1,7 @@
-FROM alpine/git as builder
-
-RUN apk add --no-cache python3 py3-pip
-
-RUN pip3 install certbot
-
-RUN pip3 install --no-cache-dir -U \
-    certbot-plugin-webroot
-
 FROM alpine/git
 
-COPY --from=builder /usr/bin/certbot /usr/bin/certbot
-COPY --from=builder /usr/lib/python3* /usr/lib/python3*
-COPY --from=builder /usr/local/lib/python3* /usr/local/lib/python3*
+# Встановлюємо certbot та його залежності за допомогою apk
+RUN apk add --no-cache certbot certbot-nginx py3-pip
 
-RUN apk add --no-cache openssl
 
 VOLUME ["/etc/letsencrypt", "/var/www/certbot"]
