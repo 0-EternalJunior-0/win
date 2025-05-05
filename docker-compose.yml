@@ -1,37 +1,33 @@
-version: "3"
+version: "3.7"
 
 services:
-  react:
-    build: .
-    container_name: my-app
-    restart: always
+  certbot:
+    build:
+      context: .
+      dockerfile: Dockerfile.certbot # використовуємо новий Dockerfile для Certbot
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt # сертифікати будуть зберігатися тут
+      - /var/www/certbot:/var/www/certbot # каталог для веб-сервера Certbot
+    entrypoint: "/bin/sh -c 'while :; do sleep 10; done'" # контейнер не завершується після запуску
 
   nginx:
-    image: nginx:latest
-    container_name: nginx_ssl
+    image: nginx:alpine
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./certbot/www:/var/www/certbot
-      - ./certbot/conf:/etc/letsencrypt
-      - react_app:/usr/share/nginx/html:ro
+      - /etc/letsencrypt:/etc/letsencrypt # сертифікати будуть зберігатися тут
+      - ./nginx.conf:/etc/nginx/nginx.conf # твій конфігураційний файл для Nginx
+      - ./my-app/build:/usr/share/nginx/html # зібраний React-додаток
     ports:
-      - "8082:80" # Замінили порт 80 на 8080
-      - "8443:443" # Порт 443 залишаємо на 8443
+      - "8081:80" # Відкриваємо порт 8081 на хості і мапимо його на порт 80 в контейнері
+      - "8444:443" # Відкриваємо порт 8444 на хості і мапимо його на порт 443 в контейнері
     depends_on:
-      - react
+      - certbot
 
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
+  my-app:
+    build:
+      context: .
+      dockerfile: Dockerfile # твій існуючий Dockerfile для React
     volumes:
-      - ./certbot/www:/var/www/certbot
-      - ./certbot/conf:/etc/letsencrypt
-    entrypoint: "/bin/sh -c"
-    command: >
-      "sleep 10 &&
-      certbot certonly --webroot --webroot-path=/var/www/certbot
-      -d win-partners.duckdns.org
-      --email your@email.com --agree-tos --no-eff-email --force-renewal"
-
-volumes:
-  react_app:
+      - ./my-app:/app # твій додаток
+    environment:
+      - NODE_ENV=production
+    command: npm start
