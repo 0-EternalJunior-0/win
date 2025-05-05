@@ -13,9 +13,9 @@ services:
   nginx:
     image: nginx:alpine
     volumes:
-      - /etc/letsencrypt:/etc/letsencrypt # Сертифікати будуть зберігатися тут
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf # Твій конфігураційний файл для Nginx
-      - ./frontend_win/build:/usr/share/nginx/html # Зібраний React-додаток
+      - /etc/letsencrypt:/etc/letsencrypt
+      - ./frontend_win/nginx.conf:/etc/nginx/nginx.conf
+      - ./frontend_win/build:/usr/share/nginx/html
     ports:
       - "8082:80" # Відкриваємо порт 8082 на хості і мапимо його на порт 80 в контейнері
       - "8444:443" # Відкриваємо порт 8444 на хості і мапимо його на порт 443 в контейнері
